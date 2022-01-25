@@ -626,9 +626,9 @@ function newGame(){
     websocket.send(JSON.stringify({type:"connection",content:"newgame"}))
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
 
-    Promise.all(
+    await Promise.all(
         image_names.map(
             imageName => loadImage(imageName)
             .then( img => ([imageName, img]))
