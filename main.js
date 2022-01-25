@@ -11,8 +11,7 @@ var board;
 /*for (let e of ["mousemove","mousedown","mouseup"]){
 canvas.addEventListener(e, function(event){
 	//if (e=="mouseup"){return;}
-	canevent = event;
-	
+	canevent = event;	
 })}*/
 
 var moveaplier = true;
