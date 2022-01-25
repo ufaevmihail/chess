@@ -50,6 +50,10 @@ function removeItemOnce(arr, value) {
   }
   return arr;
 }
+function isFlipped(x){
+    x = board.flipped==1 ? x : 7-x
+    return x
+}
 function Surface(ctx,makebackgroundfunc,posx=0,posy=0){
 	this.px=posx;
 	this.py = posy;
@@ -197,6 +201,7 @@ class Board{
 	["roof",0,7,1],["konb",1,7,1],["slon",2,7,1],["king",4,7,1],["ferz",3,7,1],["slon",5,7,1],["konb",6,7,1],["roof",7,7,1],
 	["peshka",0,6,1],["peshka",1,6,1],["peshka",2,6,1],["peshka",3,6,1],["peshka",4,6,1],["peshka",5,6,1],["peshka",6,6,1],
 	["peshka",7,6,1]]
+	flipped=1
 	constructor(){
 		var s=[]
 		var wking;
@@ -236,6 +241,12 @@ class Board{
 	handleEvent(e){
 		this.fields.forEach(str=>str.forEach(el=>el.handleEvent(e)));
 		this.figures.forEach(str=>str.forEach(el=>el.handleEvent(e)));
+	}
+	flip(){
+        this.figures.forEach(str=>str.forEach(fig=>{fig.px = 7- fig.px;fig.py=7-fig.py;
+        var fld = board.fields[fig.px][fig.py]; fig.field=fld; fld.figure=fig;
+        fig.posx = fld.posx; fig.posy=fld.posy}))
+        this.flipped = this.flipped*-1;
 	}
 }
 
@@ -300,7 +311,9 @@ class Figure extends Sprite{
 		this.cantogofields.length = 0;
 		//console.log(this.field);
 		if (send){
-		    websocket.send(JSON.stringify({type:'move',startfield:[predpx,predpy],endfield:[this.px,this.py],user_id:id,swt:switcht}))
+		    websocket.send(JSON.stringify({type:'move',startfield:[isFlipped(predpx),isFlipped(predpy)],
+		    endfield:[isFlipped(this.px),isFlipped(this.py)],
+		    user_id:id,swt:switcht}))
 		    return send
 		}
 	}
@@ -359,8 +372,9 @@ class PeshkaFigure extends Figure{
 	    this.prevrashenie()
 	}
 	prevrashenie(){
-		var p = this.team == 0 ? 7 : 0
-		if (this.py == p){
+		//var p = this.team == 1 ? 7 : 0
+		//console.log(p)
+		if (this.py == 0 || this.py==7){
 			removeItemOnce(board.figures[this.team],this)
 			var ferz = new Figure("ferz",board.fields[this.px][this.py],game.players[this.team])			
 			board.figures[this.team].push(ferz);						
@@ -476,6 +490,7 @@ function slonrule(){
 };
 function peshkarule(){
 	var v = this.team==0 ? 1 : -1;
+	v = board.flipped==1 ? v : -v;
 	var fields = board.fields;
 	if (inBoard(this.px,this.py+v)&& fields[this.px][this.py+v].figure == null){
 		this.cantogofields.push(fields[this.px][this.py+v]);
@@ -641,16 +656,18 @@ window.addEventListener("DOMContentLoaded", () => {
         id = event.user_id
         if (event.content=="ok"){
             game.player = game.players[id]
+            if (id==0)
+                board.flip()
         }
         else
             game.player = new Viewer();
     }
     if (event.type=="move_done"){
         //console.log(game.turn)
-        startposx = event.startfield[0]
-        startposy = event.startfield[1]
-        endposx = event.endfield[0]
-        endposy = event.endfield[1]
+        startposx = isFlipped(event.startfield[0])
+        startposy = isFlipped(event.startfield[1])
+        endposx = isFlipped(event.endfield[0])
+        endposy = isFlipped(event.endfield[1])
         board.fields[startposx][startposy].figure.makeMove(board.fields[endposx][endposy],false)
         if (event.swt)
             game.switchTurn()
