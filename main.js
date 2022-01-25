@@ -1,4 +1,4 @@
-var canvas = document.getElementById("myCanvas"), 
+﻿var canvas = document.getElementById("myCanvas"), 
     ctx = canvas.getContext("2d");             
 var images = {};
 var image_names = ["wferz.png","wkonb.png","wroof.png","wslon.png","wking.png","wpeshka.png",
@@ -14,6 +14,7 @@ canvas.addEventListener(e, function(event){
 	canevent = event;
 	
 })}*/
+
 var moveaplier = true;
 function canvasevent(e){canevent=e}
 canvas.addEventListener("mouseup", async function(event){
