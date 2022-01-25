@@ -7,7 +7,7 @@ var canevent = null;
 var fieldwidth = 40;
 var id;
 var websocket;
-
+var board;
 /*for (let e of ["mousemove","mousedown","mouseup"]){
 canvas.addEventListener(e, function(event){
 	//if (e=="mouseup"){return;}
@@ -609,7 +609,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 async function canvasupdate(){
-	board = new Board();
+	//board = new Board();
 	
 	board.redraw();
 	while (true) {if(canevent != null)//sprit.handleEvent(canevent)};
@@ -625,7 +625,6 @@ function newGame(){
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    game = new Game();
 
     Promise.all(
         image_names.map(
@@ -639,7 +638,10 @@ window.addEventListener("DOMContentLoaded", () => {
             })
     )).then( imageEntries => {
         // тут мы работаем с загружеными картинками
+
         images = Object.fromEntries(imageEntries);
+        game = new Game();
+        board = new Board()
         canvasupdate()
     });
 
