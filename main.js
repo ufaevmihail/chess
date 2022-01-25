@@ -252,7 +252,8 @@ class Board{
 
 
 class Figure extends Sprite{
-	onmousedown=[(e,spr)=>{if (spr.player.selectedfigure == null && game.player.team==spr.team && game.turn%2==game.player.team){spr.setSelected();}}]
+	onmousedown=[(e,spr)=>{if (spr.player.selectedfigure == null && game.player.team==spr.team && game.turn%2==game.player.team)
+	{spr.setSelected();spr.posx= e.offsetX-spr.width/3;spr.posy = e.offsetY-spr.width/3}}]
 	onmouseup=[]
 	onmousemove = [(e,spr)=>{if (spr.selected) {spr.posx= e.offsetX-spr.width/3;spr.posy = e.offsetY-spr.width/3}}]
 	behaviours=[(spr)=>{ctx.drawImage(spr.img,spr.posx,spr.posy,spr.width,spr.height)}]
@@ -281,6 +282,7 @@ class Figure extends Sprite{
 		this.enemyFiguresCantAttackOurKing();
 		this.player.selectedfigure=this;
 		this.selected = true;
+
 	}
 	canMoveHere(field){
 		if (this.cantogofields.includes(field)){
